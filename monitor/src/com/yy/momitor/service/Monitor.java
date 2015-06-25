@@ -88,7 +88,7 @@ public class Monitor implements Runnable {
 				monitorTD();
 				monitorZJ();
 			}
-		}, cal.getTime(), 10 * 1000);
+		}, cal.getTime(), sleepSeconds * 1000);
 	}
 
 	@Override

@@ -118,7 +118,10 @@ public class SendMail {
 		props.setProperty("mail.transport.protocol", "smtp");
 		String smtpService = getSmtpService(username);
 		props.setProperty("mail.host", smtpService);
-
+		if(getSmtpService(username).equals("qq")){//如果是QQ邮箱，设置端口号为587
+			props.setProperty("mail.smtp.port", "587");
+		}
+		
 		Session session = Session.getInstance(props, new Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(username, password);

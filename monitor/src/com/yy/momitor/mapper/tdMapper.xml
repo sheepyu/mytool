@@ -3,7 +3,7 @@
 <mapper namespace="com.yy.momitor.mapper.tdMapper"> 
 	
 	<select id="getTs" resultType="TD">
-		select tdbh,count(*) ts from ls_mtsms group by tdbh
+		select tdbh,count(*) ts from ls_mtsms  where fsbz!=2 group by tdbh 
 	</select>
 	
 </mapper>
