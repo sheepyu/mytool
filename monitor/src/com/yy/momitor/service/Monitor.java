@@ -103,6 +103,9 @@ public class Monitor implements Runnable {
 				}
 				
 			}
+			else if(td.getTdbh() == null && td.getTs() <= tdts){
+				log.info(DateUtil.getDateFormat()+" 通道正常");
+			}
 		}
 	}
 	
@@ -133,9 +136,13 @@ public class Monitor implements Runnable {
 		}
 		title = zjTitle.replaceAll("%dlm", title);
 		try {
-			zjFlag = new SendMail().send(title,content,zjFlag);
+			if(!content.equals("")){
+				zjFlag = new SendMail().send(title,content,zjFlag);
+			}else{
+				log.info(DateUtil.getDateFormat()+" 余额正常");
+			}
+			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
