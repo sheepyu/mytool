@@ -23,7 +23,7 @@ public class Demo {
 		//InputStream is = new FileInputStream(new File("D:\\conf.xml"));
 		SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder()
 				.build(is);
-		session = sessionFactory.openSession();
+		session = sessionFactory.openSession(true);
 		
 		//创建线程
 		ExecutorService exec = Executors.newCachedThreadPool();

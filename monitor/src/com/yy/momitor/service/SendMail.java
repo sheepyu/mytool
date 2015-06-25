@@ -1,12 +1,11 @@
 package com.yy.momitor.service;
 
-import java.io.File;
-import java.net.URL;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -35,7 +34,8 @@ public class SendMail {
 	public SendMail() throws Exception {
 		// 1.读取XML文件,获得document对象
 		SAXReader reader = new SAXReader();
-		Document document = reader.read(this.getClass().getResource("/monitor.xml"));
+		Document document = reader.read(this.getClass().getResource(
+				"/monitor.xml"));
 		// 获得根节点
 		Element root = document.getRootElement();
 		Element childNode = root.element("mail");
@@ -52,28 +52,25 @@ public class SendMail {
 		SendMail s = new SendMail();
 		s.send("测试标题", "测试内容");
 	}
-	
-	public int send(String title,String content,int flag){
-		
-		if(flag == 1){
-			this.send(title,content);
-			log.info("邮件发送成功");
+
+	public int send(String title, String content, int flag) {
+
+		if (flag == 1) {
+			this.send(title, content);
 			flag = 12;
-		}
-		else{
-			log.info("邮件防骚扰中！！！flag:"+flag);
-			if(!DateUtil.isRestTime()){
+		} else {
+			log.info("邮件防骚扰中！！！flag:" + flag);
+			if (!DateUtil.isRestTime()) {
 				flag--;
-				log.info("休息时间！！！flag:"+flag);
+				log.info("休息时间！！！flag:" + flag);
 			}
 		}
-		
+
 		return flag;
 	}
-	
 
-	public void send(String title, String content) {
-		
+	public boolean send(String title, String content) {
+
 		Session session = this.getSession();
 		session.setDebug(true);
 
@@ -86,23 +83,41 @@ public class SendMail {
 			for (int i = 0; i < addressee.size(); i++) {
 				addressList.add(new InternetAddress(addressee.get(i)));
 			}
-			InternetAddress[] address = (InternetAddress[]) addressList.toArray(new InternetAddress[addressList.size()]);
+			InternetAddress[] address = (InternetAddress[]) addressList
+					.toArray(new InternetAddress[addressList.size()]);
 			msg.setRecipients(RecipientType.TO, address);
 			msg.setSubject(title);// 主题
-			msg.setContent("<span style='color:red'>" + content + "</span>", "text/html;charset=utf-8");
-		
-			Transport.send(msg);//发送
+			msg.setContent("<span style='color:red'>" + content + "</span>",
+					"text/html;charset=utf-8");
+			Transport.send(msg);// 发送
+			log.info("邮件发送成功");
 		} catch (AddressException e) {
 			log.error("邮件地址错误");
+			log.error(this.getTrace(e));
 			e.printStackTrace();
+			return false;
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
+			log.error("邮件服务器无法连接");
+			log.error(this.getTrace(e));
 			e.printStackTrace();
+
+			for (int i = 2; i <= 10; i++) {
+				try {
+					TimeUnit.SECONDS.sleep(i * 10);
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+				}
+				log.info("尝试第" + i + "连接");
+				if (send(title, content)) {
+					log.info("第" + i + "连接成功，发送邮件");
+					return true;
+				}
+			}
 		}
+		return true;
 	}
 
-	
-	private Session getSession(){
+	private Session getSession() {
 		Properties props = new Properties();
 		props.setProperty("mail.smtp.auth", "true");
 		props.setProperty("mail.transport.protocol", "smtp");
@@ -116,11 +131,19 @@ public class SendMail {
 		});
 		return session;
 	}
-	
+
 	private String getSmtpService(String username) {
 		String name = username.split("@")[1].split("\\.")[0];
 		String smtp = "smtp." + name + ".com";
 		return smtp;
+	}
+
+	public static String getTrace(Throwable t) {
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter writer = new PrintWriter(stringWriter);
+		t.printStackTrace(writer);
+		StringBuffer buffer = stringWriter.getBuffer();
+		return buffer.toString();
 	}
 
 }
