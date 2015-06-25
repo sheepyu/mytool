@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.yy.momitor.mapper.tdMapper"> 
+	
+	<select id="getTs" resultType="TD">
+		select tdbh,count(*) ts from ls_mtsms group by tdbh
+	</select>
+	
+</mapper>
+
+

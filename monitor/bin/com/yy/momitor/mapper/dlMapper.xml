@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yy.momitor.mapper.dlMapper">
+
+	<select id="getZj" resultType="DL">
+		select dlid,zjye/100 zjye from xx_dlqb where dlid in 
+		<foreach  item="item" index="index" collection="list" open="(" separator="," close=")">  
+              #{item}  
+        </foreach> 
+	</select>
+</mapper>
+
+
