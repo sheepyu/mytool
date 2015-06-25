@@ -48,11 +48,6 @@ public class SendMail {
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
-		SendMail s = new SendMail();
-		s.send("测试标题", "测试内容");
-	}
-
 	public int send(String title, String content, int flag) {
 
 		if (flag == 1) {
