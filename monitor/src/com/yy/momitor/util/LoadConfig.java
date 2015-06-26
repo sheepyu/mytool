@@ -1,39 +1,42 @@
 package com.yy.momitor.util;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+
+import org.apache.log4j.Logger;
 
 public class LoadConfig {
-
+	private final String[] confFiles = new String[] { "conf.xml","monitor.xml","db.properties"};
+	private static Logger log = Logger.getLogger(LoadConfig.class);
+	
 	public void read() {
-
-		String rootUrl = this.getClass().getResource("/").getPath();
-		File dir = new File(rootUrl + "\\config");
-
-		if (dir.exists() && dir.isDirectory()) {
-			System.out.println("文件夹config存在");
+		String rootDir = System.getProperty("user.dir");
+		File configDir = new File(rootDir + "\\config");
+		System.out.println("configDir:" + configDir);
+		if (configDir.exists() && configDir.isDirectory()) {
+			log.info("文件夹config存在");
 		} else {
-			System.out.println("文件夹config不存在，创建文件夹");
-			dir.mkdir();
+			log.info("文件夹config不存在，创建文件夹");
+			configDir.mkdir();
 		}
 
-		File file = new File(dir + "\\monitor.xml");
-		System.out.println(file);
-		if (file.exists() && file.isFile()) {
-			System.out.println("文件monitor.xml存在");
-		} else {
-			System.out.println("文件monitor.xml不存在，复制文件");
-			File srcFile = new File(rootUrl + "\\monitor.xml");
-			this.copyFile(srcFile, file);
+		for(int i=0;i<confFiles.length;i++){
+			File destFile = new File(configDir +"\\"+confFiles[i]);
+			if(destFile.exists()&&destFile.isFile()){
+				log.info("文件"+confFiles[i]+"已存在");
+			}else{
+				log.info("文件"+confFiles[i]+"不存在，复制文件至config下");
+				this.copyFile(confFiles[i],destFile);
+			}
 		}
 	}
 
-	public void copyFile(File srcFile, File destFile) {
+	public void copyFile(String srcFileName, File destFile) {
 		// 复制文件
 		int byteread = 0;
 		FileInputStream in = null;
@@ -41,13 +44,16 @@ public class LoadConfig {
 
 		try {
 			destFile.createNewFile();
-			in = new FileInputStream(srcFile);
+			InputStream is = this.getClass().getResourceAsStream("/"+srcFileName);
+			BufferedInputStream bis = new BufferedInputStream(is);
+
 			out = new FileOutputStream(destFile);
 			byte[] buffer = new byte[1024];
-			while ((byteread = in.read(buffer)) != -1) {
+
+			while ((byteread = bis.read(buffer)) != -1) {
 				out.write(buffer, 0, byteread);
 			}
-			System.out.println("复制完成");
+			System.out.println(srcFileName+"复制完成");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
