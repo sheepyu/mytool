@@ -115,6 +115,7 @@ public class Monitor implements Runnable {
 				content = DateUtil.getDateFormat() + "  " + content;
 
 				try {
+					log.info(content);
 					tdFlag = new SendMail().send(tdTitle, content, tdFlag);
 				} catch (Exception e) {
 					log.info("发送失败");
@@ -153,6 +154,7 @@ public class Monitor implements Runnable {
 		title = zjTitle.replaceAll("%dlm", title);
 		try {
 			if (!content.equals("")) {
+				log.info(content);
 				zjFlag = new SendMail().send(title, content, zjFlag);
 			} else {
 				log.info(DateUtil.getDateFormat() + " 余额正常");

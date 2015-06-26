@@ -1,25 +1,58 @@
 package com.yy.statement.main;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.log4j.Logger;
+
+import com.yy.statement.util.DateUtil;
+import com.yy.statement.util.LoadConfig;
 
 public class Start {
 
-	public static void main(String[] args) {
+	public static final long ONE_DAY = 24 * 60 * 60 * 1000;// 一天内的毫秒数
 
-		InputStream is = Start.class.getResourceAsStream("/conf.xml");
-		SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder()
-				.build(is);
-		SqlSession session = sessionFactory.openSession(true);
+	public static Logger log = Logger.getLogger(Start.class);
+	
+	public static void main(String[] args) throws IOException {
 
-		// 创建线程
-		ExecutorService exec = Executors.newCachedThreadPool();
-		//exec.execute(new Monitor(session));
+		 new LoadConfig().init();
+		 InputStream is = new FileInputStream(new File("config/conf.xml"));
+		 SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder()
+		 .build(is);
+		 SqlSession session = sessionFactory.openSession(true);
+
+		 new Start().start();
+		 
 	}
 
+	public void start() {
+		Calendar current = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance();
+		Long curMillis = current.getTimeInMillis();// 现在时间的偏移量
+		// 设置每天早上8点
+		cal.set(Calendar.HOUR_OF_DAY, 8);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		Long timeMillis = cal.getTimeInMillis();// 定时时间的偏移量
+		Long nextTime = (curMillis - timeMillis) > 0 ? timeMillis - curMillis
+				+ ONE_DAY : timeMillis - curMillis;// 离下次定时的时间还有多少毫秒
+		log.info("现在时间是："+DateUtil.getDateFormat()+" 距离下次定时还有 :" + nextTime+"毫秒");
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				log.info(DateUtil.getDateFormat() + " 定时开启 ");
+			}
+		}, nextTime, ONE_DAY);
+	}
 }

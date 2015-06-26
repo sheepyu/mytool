@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<monitor>
+
+	<config>
+		<!--秒为单位  -->
+		<sleep>300</sleep>
+	</config>
+
+	<mail>
+		<username>sheep_yu@qq.com</username>
+		<password>sequence23</password>
+		<addressee>sheep_yu@163.com</addressee>
+	</mail>
+	
+	<td>
+		<title>警报：通道拥堵</title>
+		<content>目前通道有%ts条待发送</content>
+		<ts>10000</ts>
+	</td>
+	
+	<zj>
+		<title>余额预警：%dlm余额不足</title>
+		<content>%dlm 目前余额：%zjye 低于警报线</content>
+		<xx_dl>
+			<dlm id="1026" zjye="10">shkt</dlm>
+			<dlm id="1150" zjye="1000">shkt2</dlm>
+			<dlm id="1153" zjye="2000">shkt3</dlm>
+			<dlm id="1154" zjye="3000">shkt4</dlm>
+		</xx_dl>
+	</zj>
+</monitor>
