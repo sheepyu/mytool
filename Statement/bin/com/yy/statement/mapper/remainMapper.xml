@@ -5,6 +5,10 @@
 	<select id="getRemain" resultType="Remain">
 		select * from ls_mtsms
 	</select>
+	
+	<select id="getTs" resultType="TD">
+		select tdbh,count(*) ts from ls_mtsms  where fsbz!=2 group by tdbh 
+	</select>
 </mapper>
 
 

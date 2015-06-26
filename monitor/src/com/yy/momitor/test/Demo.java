@@ -27,9 +27,6 @@ public class Demo {
 		session = sessionFactory.openSession(true);
 
 		new Monitor(session).start();
-		// 创建线程
-		// ExecutorService exec = Executors.newCachedThreadPool();
-		// exec.execute(new Monitor(session));
 	}
 
 }
