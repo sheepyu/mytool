@@ -1,5 +1,6 @@
 package com.yy.momitor.service;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -34,8 +35,7 @@ public class SendMail {
 	public SendMail() throws Exception {
 		// 1.读取XML文件,获得document对象
 		SAXReader reader = new SAXReader();
-		Document document = reader.read(this.getClass().getResource(
-				"/monitor.xml"));
+		Document document = reader.read(new File("config/monitor.xml"));
 		// 获得根节点
 		Element root = document.getRootElement();
 		Element childNode = root.element("mail");

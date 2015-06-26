@@ -41,8 +41,7 @@ public class Monitor implements Runnable {
 
 		try {
 			SAXReader reader = new SAXReader();
-			Document document = reader.read(this.getClass().getResource(
-					"/monitor.xml"));
+			Document document = reader.read(new File("config/monitor.xml"));
 			Element root = document.getRootElement();
 
 			Element confElement = root.element("config");

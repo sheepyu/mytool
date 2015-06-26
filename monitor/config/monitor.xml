@@ -22,7 +22,7 @@
 		<title>余额预警：%dlm余额不足</title>
 		<content>%dlm 目前余额：%zjye 低于警报线</content>
 		<xx_dl>
-			<dlm id="1026" zjye="2000">shkt</dlm>
+			<dlm id="1026" zjye="10">shkt</dlm>
 			<dlm id="1150" zjye="1000">shkt2</dlm>
 			<dlm id="1153" zjye="2000">shkt3</dlm>
 			<dlm id="1154" zjye="3000">shkt4</dlm>

@@ -11,10 +11,11 @@ import java.io.InputStream;
 import org.apache.log4j.Logger;
 
 public class LoadConfig {
-	private final String[] confFiles = new String[] { "conf.xml","monitor.xml","db.properties"};
+	private final String[] confFiles = new String[] { "conf.xml",
+			"monitor.xml", };
 	private static Logger log = Logger.getLogger(LoadConfig.class);
-	
-	public void read() {
+
+	public void init() {
 		String rootDir = System.getProperty("user.dir");
 		File configDir = new File(rootDir + "\\config");
 		System.out.println("configDir:" + configDir);
@@ -25,13 +26,13 @@ public class LoadConfig {
 			configDir.mkdir();
 		}
 
-		for(int i=0;i<confFiles.length;i++){
-			File destFile = new File(configDir +"\\"+confFiles[i]);
-			if(destFile.exists()&&destFile.isFile()){
-				log.info("文件"+confFiles[i]+"已存在");
-			}else{
-				log.info("文件"+confFiles[i]+"不存在，复制文件至config下");
-				this.copyFile(confFiles[i],destFile);
+		for (int i = 0; i < confFiles.length; i++) {
+			File destFile = new File(configDir + "\\" + confFiles[i]);
+			if (destFile.exists() && destFile.isFile()) {
+				log.info("文件" + confFiles[i] + "已存在");
+			} else {
+				log.info("文件" + confFiles[i] + "不存在，复制文件至config下");
+				this.copyFile(confFiles[i], destFile);
 			}
 		}
 	}
@@ -44,7 +45,8 @@ public class LoadConfig {
 
 		try {
 			destFile.createNewFile();
-			InputStream is = this.getClass().getResourceAsStream("/"+srcFileName);
+			InputStream is = this.getClass().getResourceAsStream(
+					"/" + srcFileName);
 			BufferedInputStream bis = new BufferedInputStream(is);
 
 			out = new FileOutputStream(destFile);
@@ -53,7 +55,7 @@ public class LoadConfig {
 			while ((byteread = bis.read(buffer)) != -1) {
 				out.write(buffer, 0, byteread);
 			}
-			System.out.println(srcFileName+"复制完成");
+			System.out.println(srcFileName + "复制完成");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -75,6 +77,6 @@ public class LoadConfig {
 
 	public static void main(String[] args) throws Exception {
 		LoadConfig l = new LoadConfig();
-		l.read();
+		l.init();
 	}
 }
