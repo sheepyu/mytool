@@ -43,7 +43,7 @@ public class RemainService {
 
 	public void writeExcel(List<Remain> remains) throws Exception {
 		String FileName = "余额提醒-" + DateUtil.getMMdd() + ".xls";
-		this.createXls(FileName);//复制文件
+		this.createXls(FileName);// 复制文件
 		// 打开excel
 		FileInputStream inputStream = new FileInputStream("excel/" + FileName);
 		// 读取excel内容
@@ -57,7 +57,7 @@ public class RemainService {
 		HSSFRow srcRow = sheet.getRow(2);
 		for (int i = 0; i < remains.size(); i++) {
 			if (i != 0) {
-				HSSFRow destRow = sheet.createRow(i+2);
+				HSSFRow destRow = sheet.createRow(i + 2);
 				PoiUtil.copyRowStyle(srcRow, destRow);
 			}
 			HSSFRow row = sheet.getRow(i + 2);
@@ -75,12 +75,12 @@ public class RemainService {
 			cell.setCellValue(remains.get(i).getCanUse());
 		}
 		sheet.setForceFormulaRecalculation(true);// 刷新公式
-		FileOutputStream out = null;
-		
-		out = new FileOutputStream("excel/" + FileName);
+		FileOutputStream out = new FileOutputStream("excel/" + FileName);
 		workbook.write(out);
 		inputStream.close();
-		out.close();
+		if (out != null) {
+			out.close();
+		}
 		log.info(FileName + "已完成");
 	}
 

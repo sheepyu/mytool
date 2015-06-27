@@ -1,14 +1,11 @@
 package com.yy.momitor.service;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
@@ -19,9 +16,10 @@ import org.dom4j.io.SAXReader;
 
 import com.yy.momitor.domain.DL;
 import com.yy.momitor.domain.TD;
+import com.yy.momitor.filter.EmailFilter;
 import com.yy.momitor.util.DateUtil;
 
-public class Monitor implements Runnable {
+public class Monitor {
 
 	private static Logger log = Logger.getLogger(Monitor.class);
 
@@ -90,20 +88,6 @@ public class Monitor implements Runnable {
 		}, cal.getTime(), sleepSeconds * 1000);
 	}
 
-	@Override
-	public void run() {
-		while (true) {
-			this.monitorTD();
-			this.monitorZJ();
-			try {
-				TimeUnit.SECONDS.sleep(sleepSeconds);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
 	public void monitorTD() {
 		session.clearCache();
 		List<TD> tds = session
@@ -113,10 +97,10 @@ public class Monitor implements Runnable {
 			if (td.getTdbh() == null && td.getTs() > tdts) {
 				String content = tdContent.replaceAll("%ts", "" + td.getTs());
 				content = DateUtil.getDateFormat() + "  " + content;
-
 				try {
 					log.info(content);
-					tdFlag = new SendMail().send(tdTitle, content, tdFlag);
+					
+					tdFlag = new SendMail().send(tdTitle, content,tdFlag);
 				} catch (Exception e) {
 					log.info("发送失败");
 					e.printStackTrace();
@@ -155,7 +139,9 @@ public class Monitor implements Runnable {
 		try {
 			if (!content.equals("")) {
 				log.info(content);
-				zjFlag = new SendMail().send(title, content, zjFlag);
+				if(EmailFilter.canSend(dls)){
+					new SendMail().send(title, content);
+				}
 			} else {
 				log.info(DateUtil.getDateFormat() + " 余额正常");
 			}

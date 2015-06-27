@@ -15,7 +15,6 @@ public class DateUtil {
 	
 	public static boolean isRestTime(){
 		boolean result = false;
-		
 		Calendar c = Calendar.getInstance(); 
 		c.setTime(new Date());
 		int hour = c.get(Calendar.HOUR_OF_DAY);

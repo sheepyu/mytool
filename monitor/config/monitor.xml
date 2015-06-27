@@ -23,9 +23,9 @@
 		<content>%dlm 目前余额：%zjye 低于警报线</content>
 		<xx_dl>
 			<dlm id="1026" zjye="10">shkt</dlm>
-			<dlm id="1150" zjye="1000">shkt2</dlm>
-			<dlm id="1153" zjye="2000">shkt3</dlm>
-			<dlm id="1154" zjye="3000">shkt4</dlm>
+			<dlm id="1150" zjye="100000">shkt2</dlm>
+			<dlm id="1153" zjye="20000">shkt3</dlm>
+			<dlm id="1154" zjye="30">shkt4</dlm>
 		</xx_dl>
 	</zj>
 </monitor>
