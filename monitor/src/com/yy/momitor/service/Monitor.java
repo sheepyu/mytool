@@ -124,6 +124,7 @@ public class Monitor {
 		log.info(dls);
 		String content = "";
 		String title = "";
+		List<DL> passDL = new ArrayList<DL>();//余额不足的放入其中，传递给过滤器，判断是否要防骚扰
 		for (DL dl : dlMonitor) {
 			for (int i = 0; i < dls.size(); i++) {
 				if (dl.getDlid() == dls.get(i).getDlid()
@@ -132,6 +133,7 @@ public class Monitor {
 					temp = temp.replaceAll("%zjye", "" + dls.get(i).getZjye());
 					content += DateUtil.getDateFormat() + " " + temp + "<br/>";
 					title += dl.getDlm() + ",";
+					passDL.add(dl);
 				}
 			}
 		}
@@ -139,7 +141,7 @@ public class Monitor {
 		try {
 			if (!content.equals("")) {
 				log.info(content);
-				if(EmailFilter.canSend(dls)){
+				if(EmailFilter.canSend(passDL)){
 					new SendMail().send(title, content);
 				}
 			} else {

@@ -19,8 +19,8 @@ public class EmailFilter {
 		boolean result = false;
 		Calendar previous = null;
 		Calendar current = Calendar.getInstance();
-		
-		if(isRestTime()){
+
+		if (isRestTime()) {
 			return false;
 		}
 		for (int i = 0; i < dls.size(); i++) {
@@ -33,7 +33,7 @@ public class EmailFilter {
 				Long difference = current.getTimeInMillis()
 						- previous.getTimeInMillis();
 				log.info("difference:" + difference);
-				if (difference >= 1000 * 3600 * 4) {
+				if (difference >= 1000 * 3600 * 24) {
 					result = true;
 				}
 			}
@@ -48,13 +48,13 @@ public class EmailFilter {
 		}
 		return result;
 	}
-	
-	public static boolean isRestTime(){
+
+	public static boolean isRestTime() {
 		boolean result = false;
-		Calendar c = Calendar.getInstance(); 
+		Calendar c = Calendar.getInstance();
 		c.setTime(new Date());
 		int hour = c.get(Calendar.HOUR_OF_DAY);
-		if(hour<=8||hour>=23){
+		if (hour <= 8 || hour >= 23) {
 			result = true;
 		}
 		return result;
