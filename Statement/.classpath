@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="lib/mybatis-3.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/ojdbc6_g.jar"/>
 	<classpathentry kind="lib" path="lib/smtp.jar"/>
+	<classpathentry kind="lib" path="lib/poi-3.12-20150511.jar" sourcepath="D:/JAVA API/库包/poi-src-3.12-20150511.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

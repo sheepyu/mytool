@@ -14,9 +14,12 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.log4j.Logger;
 
+import com.yy.statement.domain.Remain;
 import com.yy.statement.domain.TD;
+import com.yy.statement.service.RemainService;
 import com.yy.statement.util.DateUtil;
 import com.yy.statement.util.LoadConfig;
+import com.yy.statement.util.MybatisUtil;
 
 public class Start {
 
@@ -28,9 +31,7 @@ public class Start {
 
 	public Start() throws IOException {
 		new LoadConfig().init();
-		InputStream is = new FileInputStream(new File("config/conf.xml"));
-		sessionFactory = new SqlSessionFactoryBuilder().build(is);
-		session = sessionFactory.openSession(true);
+		new MybatisUtil();
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -57,12 +58,17 @@ public class Start {
 			@Override
 			public void run() {
 				log.info(DateUtil.getDateFormat() + " 定时开启 ");
-
+				getSession();
 				session.clearCache();
 				List<TD> tds = session.selectList("com.yy.statement.mapper.remainMapper.getTs");
+				new RemainService(session).search();
 				log.info(tds);
 				log.info("查询完毕，等待下次查询");
 			}
-		}, nextTime, ONE_DAY);
+		}, 0, ONE_DAY);
+	}
+	
+	public void getSession(){
+		session = MybatisUtil.getSession();
 	}
 }

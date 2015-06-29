@@ -3,12 +3,28 @@
 <mapper namespace="com.yy.statement.mapper.remainMapper">
 
 	<select id="getRemain" resultType="Remain">
-		select * from ls_mtsms
+	select dlm,dlmc,zjye,x.expendDay,expendWeek,floor((zjye/expendWeek)*7) as canUse from (
+	select dlid,sum(zje)/100 as expendWeek,
+	(select sum(zje)/100 from tj_dldx b where a.dlid=b.dlid and tjrq&gt;=to_char(sysdate-1,&apos;yyyymmdd&apos;) group by dlid) as expendDay,
+	(select zjye/100 from tj_dl c where  tjrq&gt;=to_char(sysdate-1,&apos;yyyymmdd&apos;) and zjye&lt;400000 and a.dlid=c.dlid) as zjye
+	from tj_dldx a where tjrq&gt;=to_char(sysdate-7,&apos;yyyymmdd&apos;) group by dlid) x,xx_dl y
+	where zjye is not null and x.dlid=y.dlid and (zjye/expendWeek)&lt;5  order by dlm
+	</select>
+	
+	
+	<select id="getRemain2" resultType="Remain">
+	select dlm,dlmc,zjye,x.expendDay,expendWeek,floor((zjye/expendWeek)*7) as canUse from (
+	select dlid,sum(zje)/100 as expendWeek,
+	(select sum(zje)/100 from tj_dldx b where a.dlid=b.dlid and tjrq&gt;=to_char(sysdate-1,&apos;yyyymmdd&apos;) group by dlid) as expendDay,
+	(select zjye/100 from tj_dl c where  tjrq&gt;=to_char(sysdate-1,&apos;yyyymmdd&apos;) and a.dlid=c.dlid) as zjye
+	from tj_dldx a where tjrq&gt;=to_char(sysdate-7,&apos;yyyymmdd&apos;) group by dlid) x,xx_dl y
+	where zjye is not null and x.dlid=y.dlid and (zjye/expendWeek)&lt;5  order by dlm
 	</select>
 	
 	<select id="getTs" resultType="TD">
 		select tdbh,count(*) ts from ls_mtsms  where fsbz!=2 group by tdbh 
 	</select>
+	
 </mapper>
 
 

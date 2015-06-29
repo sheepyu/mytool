@@ -13,6 +13,10 @@
 		<environment id="development">
 			<transactionManager type="JDBC" />
 			<dataSource type="POOLED">
+				<!-- 自动ping闲置1小时的连接，防止被数据库单方面断开 -->
+				<property name="poolPingEnabled" value="true"/>
+                <property name="poolPingQuery" value="select count(*) from xx_dl"/>
+                <property name="poolPingConnectionsNotUsedFor" value="10000"/>
 				<!-- <property name="driver" value="${driver}" />
 				<property name="url" value="${url}" />
 				<property name="username" value="${username}" />
@@ -21,6 +25,10 @@
 				<property name="url" value="jdbc:oracle:thin:@183.129.244.174:61521:orcl" />
 				<property name="username" value="ycgd" />
 				<property name="password" value="123456" />
+				<!-- <property name="driver" value="oracle.jdbc.driver.OracleDriver" />
+				<property name="url" value="jdbc:oracle:thin:@192.168.1.30:1521:orcl" />
+				<property name="username" value="ycsms" />
+				<property name="password" value="smsycDBora0325" /> -->
 			</dataSource>
 		</environment>
 	</environments>

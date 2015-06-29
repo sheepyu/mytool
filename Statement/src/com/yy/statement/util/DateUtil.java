@@ -13,6 +13,13 @@ public class DateUtil {
 		return dateString;
 	}
 	
+	public static String getMMdd(){
+		Date currentTime = new Date();
+		SimpleDateFormat formatter = new SimpleDateFormat("MMdd");
+		String dateString = formatter.format(currentTime);
+		return dateString;
+	}
+	
 	public static boolean isRestTime(){
 		boolean result = false;
 		

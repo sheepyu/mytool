@@ -18,7 +18,6 @@ public class LoadConfig {
 	public void init() {
 		String rootDir = System.getProperty("user.dir");
 		File configDir = new File(rootDir + "\\config");
-		System.out.println("configDir:" + configDir);
 		if (configDir.exists() && configDir.isDirectory()) {
 			log.info("文件夹config存在");
 		} else {
@@ -40,7 +39,6 @@ public class LoadConfig {
 	public void copyFile(String srcFileName, File destFile) {
 		// 复制文件
 		int byteread = 0;
-		FileInputStream in = null;
 		FileOutputStream out = null;
 
 		try {
@@ -55,16 +53,13 @@ public class LoadConfig {
 			while ((byteread = bis.read(buffer)) != -1) {
 				out.write(buffer, 0, byteread);
 			}
-			System.out.println(srcFileName + "复制完成");
+			log.info(srcFileName + "复制完成");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (in != null) {
-					in.close();
-				}
 				if (out != null) {
 					out.close();
 				}

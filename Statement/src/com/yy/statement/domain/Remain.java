@@ -3,9 +3,9 @@ package com.yy.statement.domain;
 public class Remain {
 	private String dlm;// 代理名
 	private String dlmc;// 代理名称
-	private float zjye;// 资金余额
-	private float expendDay;// 昨日花费
-	private float expendWeek;// 一周花费
+	private double zjye;// 资金余额
+	private double expendDay;// 昨日花费
+	private double expendWeek;// 一周花费
 	private int canUse;// 可使用天数
 
 	public String getDlm() {
@@ -24,27 +24,27 @@ public class Remain {
 		this.dlmc = dlmc;
 	}
 
-	public float getZjye() {
+	public double getZjye() {
 		return zjye;
 	}
 
-	public void setZjye(float zjye) {
+	public void setZjye(double zjye) {
 		this.zjye = zjye;
 	}
 
-	public float getExpendDay() {
+	public double getExpendDay() {
 		return expendDay;
 	}
 
-	public void setExpendDay(float expendDay) {
+	public void setExpendDay(double expendDay) {
 		this.expendDay = expendDay;
 	}
 
-	public float getExpendWeek() {
+	public double getExpendWeek() {
 		return expendWeek;
 	}
 
-	public void setExpendWeek(float expendWeek) {
+	public void setExpendWeek(double expendWeek) {
 		this.expendWeek = expendWeek;
 	}
 
@@ -62,5 +62,4 @@ public class Remain {
 				+ ", expendDay=" + expendDay + ", expendWeek=" + expendWeek
 				+ ", canUse=" + canUse + "]";
 	}
-
 }
