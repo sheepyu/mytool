@@ -3,7 +3,7 @@ package com.yy.statement.domain;
 public class Syts {
 
 	private String tdbh;// 通道编号
-	private String sumSyts;// 上游总条数
+	private int sumSyts;// 上游总条数
 
 	@Override
 	public String toString() {
@@ -18,12 +18,14 @@ public class Syts {
 		this.tdbh = tdbh;
 	}
 
-	public String getSumSyts() {
+	public int getSumSyts() {
 		return sumSyts;
 	}
 
-	public void setSumSyts(String sumSyts) {
+	public void setSumSyts(int sumSyts) {
 		this.sumSyts = sumSyts;
 	}
+
+	
 
 }
