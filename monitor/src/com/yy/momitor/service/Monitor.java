@@ -99,7 +99,6 @@ public class Monitor {
 				content = DateUtil.getDateFormat() + "  " + content;
 				try {
 					log.info(content);
-					
 					tdFlag = new SendMail().send(tdTitle, content,tdFlag);
 				} catch (Exception e) {
 					log.info("发送失败");

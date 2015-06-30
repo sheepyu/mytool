@@ -21,10 +21,6 @@
 	where zjye is not null and x.dlid=y.dlid and (zjye/expendWeek)&lt;5  order by dlm
 	</select>
 	
-	<select id="getTs" resultType="TD">
-		select tdbh,count(*) ts from ls_mtsms  where fsbz!=2 group by tdbh 
-	</select>
-	
 </mapper>
 
 

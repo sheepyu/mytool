@@ -35,5 +35,6 @@
 
 	<mappers>
 		<mapper resource="com/yy/statement/mapper/remainMapper.xml" />
+		<mapper resource="com/yy/statement/mapper/sytsMapper.xml" />
 	</mappers>
 </configuration>

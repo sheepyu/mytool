@@ -1,9 +1,6 @@
 package com.yy.statement.main;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
@@ -11,12 +8,11 @@ import java.util.TimerTask;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.log4j.Logger;
 
-import com.yy.statement.domain.Remain;
-import com.yy.statement.domain.TD;
+import com.yy.statement.domain.Syts;
 import com.yy.statement.service.RemainService;
+import com.yy.statement.service.ReportService;
 import com.yy.statement.util.DateUtil;
 import com.yy.statement.util.LoadConfig;
 import com.yy.statement.util.MybatisUtil;
@@ -51,24 +47,25 @@ public class Start {
 		Long timeMillis = cal.getTimeInMillis();// 定时时间的偏移量
 		Long nextTime = (curMillis - timeMillis) > 0 ? timeMillis - curMillis
 				+ ONE_DAY : timeMillis - curMillis;// 离下次定时的时间还有多少毫秒
-		log.info("现在时间是：" + DateUtil.getDateFormat() + " 距离下次定时还有 :" + nextTime
+		log.info("现在时间是：" + DateUtil.getTime() + " 距离下次定时还有 :" + nextTime
 				+ "毫秒");
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				log.info(DateUtil.getDateFormat() + " 定时开启 ");
+				log.info(DateUtil.getTime() + " 定时开启 ");
 				getSession();
 				session.clearCache();
-				List<TD> tds = session.selectList("com.yy.statement.mapper.remainMapper.getTs");
-				new RemainService(session).search();
-				log.info(tds);
+				// TODO 测试report 注释掉remain,测试完毕需加去除注释
+				//new RemainService(session).search();
+				new ReportService(session).begin();
+				session.close();
 				log.info("查询完毕，等待下次查询");
 			}
 		}, 0, ONE_DAY);
 	}
-	
-	public void getSession(){
+
+	public void getSession() {
 		session = MybatisUtil.getSession();
 	}
 }

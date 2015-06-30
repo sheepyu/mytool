@@ -42,7 +42,7 @@ public class RemainService {
 	}
 
 	public void writeExcel(List<Remain> remains) throws Exception {
-		String FileName = "余额提醒-" + DateUtil.getMMdd() + ".xls";
+		String FileName = "余额提醒-" + DateUtil.getTime("MMdd") + ".xls";
 		this.createXls(FileName);// 复制文件
 		// 打开excel
 		FileInputStream inputStream = new FileInputStream("excel/" + FileName);
