@@ -76,6 +76,20 @@ public class ReportService {
 		FileInputStream inputStream = new FileInputStream(destName);
 		// 读取excel内容
 		HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+
+		this.statisticsSheet(workbook);
+
+		FileOutputStream out = new FileOutputStream(destName);
+		workbook.write(out);
+		inputStream.close();
+		if (out != null) {
+			out.close();
+		}
+		log.info("增值业务部发送量统计报表 已完成");
+	}
+
+	// 数据统计sheet
+	public void statisticsSheet(HSSFWorkbook workbook) {
 		// 获得sheet
 		HSSFSheet sheet = workbook.getSheet("增值业务部发送量统计报表"
 				+ DateUtil.getTime("MM") + "月");
@@ -83,7 +97,6 @@ public class ReportService {
 		HSSFRow srcRow = sheet.getRow(2);
 		HSSFRow destRow = PoiUtil.insertRow(sheet, sheet.getLastRowNum());// 插入一行
 		PoiUtil.copyRowStyle(srcRow, destRow);// 格式
-
 		/**
 		 * 对sheet2写入数据
 		 */
@@ -99,16 +112,23 @@ public class ReportService {
 		cell.setCellValue(sytsMap.get("2004"));
 		cell = destRow.getCell(5);
 		cell.setCellValue(sytsMap.get("3002"));
-		
-		
-		sheet.setForceFormulaRecalculation(true);// 刷新公式
-		FileOutputStream out = new FileOutputStream(destName);
-		workbook.write(out);
-		inputStream.close();
-		if (out != null) {
-			out.close();
+		cell = destRow.getCell(6);// 总量cell
+		cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);// 设置为公式
+		int rowNum = destRow.getRowNum() + 1;
+		String formula = "sum(B" + rowNum + ":F" + rowNum + ")";
+		cell.setCellFormula(formula);
+
+		// 总计公式
+		HSSFRow sumRow = sheet.getRow(sheet.getLastRowNum());
+		for (int i = 1; i <= 6; i++) {
+			HSSFCell sumCell = sumRow.getCell(i);
+			String formula2 = "sum(" + (char) (65 + i) + "3:" + (char) (65 + i)
+					+ rowNum + ")";
+			sumCell.setCellFormula(formula2);
 		}
-		log.info("增值业务部发送量统计报表 已完成");
+
+		sheet.setForceFormulaRecalculation(true);// 刷新公式
+		log.info("数据统计完成");
 	}
 
 	private void initSytsMap() {
