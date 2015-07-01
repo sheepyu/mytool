@@ -113,18 +113,15 @@ public class ReportService {
 		cell = destRow.getCell(5);
 		cell.setCellValue(sytsMap.get("3002"));
 		cell = destRow.getCell(6);// 总量cell
-		cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);// 设置为公式
-		int rowNum = destRow.getRowNum() + 1;
-		String formula = "sum(B" + rowNum + ":F" + rowNum + ")";
-		cell.setCellFormula(formula);
-
+//		cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);// 设置为公式
+//		String formula = "sum(B" + rowNum + ":F" + rowNum + ")";
+//		cell.setCellFormula(formula);
+		excelUtil.rowSum(2,6,cell);
 		// 总计公式
 		HSSFRow sumRow = sheet.getRow(sheet.getLastRowNum());
-		for (int i = 1; i <= 6; i++) {
-			HSSFCell sumCell = sumRow.getCell(i);
-			String formula2 = "sum(" + (char) (65 + i) + "3:" + (char) (65 + i)
-					+ rowNum + ")";
-			sumCell.setCellFormula(formula2);
+		int rowNum = destRow.getRowNum() + 1;
+		for(int i = 1;i<=6;i++){
+			excelUtil.cellSum(3, rowNum, sumRow.getCell(i));
 		}
 
 		sheet.setForceFormulaRecalculation(true);// 刷新公式
