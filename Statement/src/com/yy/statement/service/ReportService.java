@@ -14,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import com.yy.statement.domain.Sale;
 import com.yy.statement.domain.Syts;
 import com.yy.statement.util.DateUtil;
 import com.yy.statement.util.ExcelUtil;
@@ -30,6 +31,7 @@ public class ReportService {
 	private ExcelUtil excelUtil = new ExcelUtil();
 	SqlSession session = null;
 	List<Syts> sytsList = new ArrayList<Syts>();
+	List<Sale> saleList = new ArrayList<Sale>();
 	String destName = null;
 
 	private static Map<String, Integer> sytsMap = new HashMap<String, Integer>();
@@ -43,6 +45,7 @@ public class ReportService {
 	public void begin() {
 		this.createNewXls();
 		this.searchSyts(DateUtil.getYesterday("yyyyMMdd"));
+		this.searchSale(DateUtil.getYesterday("yyyyMMdd"));
 		try {
 			this.writeExcel();
 		} catch (Exception e) {
@@ -51,7 +54,17 @@ public class ReportService {
 		}
 	}
 
+	private void searchSale(String dayTime) {
+		//TODO 车上使用
+		dayTime = "20150618";
+		saleList = session.selectList(
+				"com.yy.statement.mapper.saleMapper.getSale", dayTime);
+		log.info(saleList);
+		
+	}
+
 	private void searchSyts(String dayTime) {
+		//TODO 测试使用，测试完毕撤下
 		dayTime = "20150618";
 		sytsList = session.selectList(
 				"com.yy.statement.mapper.sytsMapper.getSyts", dayTime);
@@ -78,7 +91,7 @@ public class ReportService {
 		HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
 
 		this.statisticsSheet(workbook);
-
+		this.writeSyts(workbook);
 		FileOutputStream out = new FileOutputStream(destName);
 		workbook.write(out);
 		inputStream.close();
@@ -88,7 +101,34 @@ public class ReportService {
 		log.info("增值业务部发送量统计报表 已完成");
 	}
 
-	// 数据统计sheet
+	/**
+	 * 对运营商数据统计
+	 * @param workbook
+	 */
+	public void writeSyts(HSSFWorkbook workbook) {
+		// 获得sheet
+		System.out.println(DateUtil.getDayBefor(2, "M月dd日")
+				+ "系统数据统计");
+		HSSFSheet sheet = workbook.getSheet(DateUtil.getDayBefor(2, "M月dd日")
+				+ "系统数据统计");
+		HSSFRow row = sheet.getRow(3);
+		HSSFCell cell = row.getCell(1);
+		cell.setCellValue(sytsMap.get("1006"));
+		cell = row.getCell(2);
+		cell.setCellValue(sytsMap.get("1009"));
+		cell = row.getCell(3);
+		cell.setCellValue(sytsMap.get("1010"));
+		cell = row.getCell(4);
+		cell.setCellValue(sytsMap.get("2004"));
+		cell = row.getCell(5);
+		cell.setCellValue(sytsMap.get("3002"));
+		sheet.setForceFormulaRecalculation(true);// 刷新公式
+	}
+
+	/**
+	 * 对系统发送数据统计
+	 * @param workbook
+	 */
 	public void statisticsSheet(HSSFWorkbook workbook) {
 		// 获得sheet
 		HSSFSheet sheet = workbook.getSheet("增值业务部发送量统计报表"
@@ -113,14 +153,11 @@ public class ReportService {
 		cell = destRow.getCell(5);
 		cell.setCellValue(sytsMap.get("3002"));
 		cell = destRow.getCell(6);// 总量cell
-//		cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);// 设置为公式
-//		String formula = "sum(B" + rowNum + ":F" + rowNum + ")";
-//		cell.setCellFormula(formula);
-		excelUtil.rowSum(2,6,cell);
+		excelUtil.rowSum(2, 6, cell);
 		// 总计公式
 		HSSFRow sumRow = sheet.getRow(sheet.getLastRowNum());
 		int rowNum = destRow.getRowNum() + 1;
-		for(int i = 1;i<=6;i++){
+		for (int i = 1; i <= 6; i++) {
 			excelUtil.cellSum(3, rowNum, sumRow.getCell(i));
 		}
 

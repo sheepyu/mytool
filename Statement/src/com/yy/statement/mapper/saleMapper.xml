@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yy.statement.mapper.saleMapper">
+
+	<select id="getSale" resultType="Sale" parameterType="String">
+		select d.dlm,d.dlmc,m.tdbh,sum(ts) as ts,sum(jg/100) as saleroomn
+		from ls_mtsms m,xx_dl d where m.dlid=d.dlid and m.zt=1 and m.fsrq=#{fsrq}
+		group by fsrq,d.dlm,d.dlmc,tdbh
+		order by dlm ,tdbh
+	</select>
+</mapper>
+
+

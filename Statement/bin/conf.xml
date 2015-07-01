@@ -36,5 +36,6 @@
 	<mappers>
 		<mapper resource="com/yy/statement/mapper/remainMapper.xml" />
 		<mapper resource="com/yy/statement/mapper/sytsMapper.xml" />
+		<mapper resource="com/yy/statement/mapper/saleMapper.xml" />
 	</mappers>
 </configuration>
