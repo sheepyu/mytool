@@ -40,7 +40,7 @@ public class PoiUtil {
 	 * @return
 	 */
 	public static void delteRows(HSSFSheet sheet, int startRow, int n) {
-		sheet.shiftRows(startRow, sheet.getLastRowNum(), -n, true, false);
+		sheet.shiftRows(startRow+n, sheet.getLastRowNum(), -n, true, false);
 	}
 
 	/**

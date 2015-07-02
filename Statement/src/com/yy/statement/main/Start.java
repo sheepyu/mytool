@@ -2,7 +2,6 @@ package com.yy.statement.main;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -10,8 +9,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.Logger;
 
-import com.yy.statement.domain.Syts;
-import com.yy.statement.service.RemainService;
 import com.yy.statement.service.ReportService;
 import com.yy.statement.util.DateUtil;
 import com.yy.statement.util.LoadConfig;
@@ -41,7 +38,7 @@ public class Start {
 		Calendar cal = Calendar.getInstance();
 		Long curMillis = current.getTimeInMillis();// 现在时间的偏移量
 		// 设置每天早上8点
-		cal.set(Calendar.HOUR_OF_DAY, 12);
+		cal.set(Calendar.HOUR_OF_DAY, 8);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		Long timeMillis = cal.getTimeInMillis();// 定时时间的偏移量

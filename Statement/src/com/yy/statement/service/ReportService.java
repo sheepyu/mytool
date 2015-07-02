@@ -118,6 +118,7 @@ public class ReportService {
 		this.statisticsSheet(workbook);
 		this.writeSyts(workbook);
 		this.writeSale(workbook);
+		
 		FileOutputStream out = new FileOutputStream(destName);
 		workbook.write(out);
 		inputStream.close();
@@ -201,6 +202,8 @@ public class ReportService {
 		int saleNumNow = saleBeanList.size();
 		if (saleNumBefor < saleNumNow) {
 			PoiUtil.insertRows(sheet, 16, saleNumNow - saleNumBefor);
+		}else{
+			PoiUtil.delteRows(sheet, 16, saleNumBefor - saleNumNow);
 		}
 		//复制格式
 		for(int i=1;i<=saleNumNow-saleNumBefor;i++){
@@ -229,7 +232,11 @@ public class ReportService {
 			excelUtil.rowSum(3, 7, cell);
 			cell = row.getCell(8);
 			cell.setCellValue(saleBean.getSaleroomn());
+			
+			
 		}
+		int sheetIndex = workbook.getSheetIndex(sheet);
+		workbook.setSheetName(sheetIndex, DateUtil.getDayBefor(1, "M月dd日") + "系统数据统计");
 	}
 
 	private void initSytsMap() {
