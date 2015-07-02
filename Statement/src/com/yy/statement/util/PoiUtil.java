@@ -40,7 +40,7 @@ public class PoiUtil {
 	 * @return
 	 */
 	public static void delteRows(HSSFSheet sheet, int startRow, int n) {
-		sheet.shiftRows(startRow+n, sheet.getLastRowNum(), -n, true, false);
+		sheet.shiftRows(startRow + n, sheet.getLastRowNum(), -n, true, false);
 	}
 
 	/**
@@ -70,5 +70,35 @@ public class PoiUtil {
 	public static void copyCellStyle(HSSFCell srcCell, HSSFCell destCell) {
 		// 获得格式
 		destCell.setCellStyle(srcCell.getCellStyle());
+	}
+
+	/**
+	 * 对行进行求和
+	 * 
+	 * @param startNum
+	 * @param endNum
+	 * @param cell
+	 */
+	public static void rowSum(int startNum, int endNum, HSSFCell cell) {
+		char startChar = (char) ((startNum - 2) % 26 + 66);
+		char endChar = (char) ((endNum - 2) % 26 + 66);
+		int rowNum = cell.getRowIndex() + 1;
+		String formula = "SUM(" + startChar + rowNum + ":" + endChar + rowNum + ")";
+		cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);
+		cell.setCellFormula(formula);
+	}
+
+	/**
+	 * 对列进行求和
+	 * 
+	 * @param startCellNum
+	 * @param endCellNum
+	 * @param cell
+	 */
+	public static void cellSum(int startCellNum, int endCellNum, HSSFCell cell) {
+		char cellChar = (char) ((cell.getColumnIndex() - 1) % 26 + 66);
+		String formula = "SUM(" + cellChar + startCellNum + ":" + cellChar + endCellNum + ")";
+		cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);
+		cell.setCellFormula(formula);
 	}
 }

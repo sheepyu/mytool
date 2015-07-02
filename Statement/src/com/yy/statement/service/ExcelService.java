@@ -1,4 +1,4 @@
-package com.yy.statement.util;
+package com.yy.statement.service;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,11 +7,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 
-public class ExcelUtil {
-	private static Logger log = Logger.getLogger(ExcelUtil.class);
+/**
+ * 专门用来对付excel操作的业务
+ * 
+ * @author Administrator
+ * 
+ */
+public class ExcelService {
+	private static Logger log = Logger.getLogger(ExcelService.class);
 
 	/**
 	 * 复制ExcelUtil
@@ -48,24 +52,6 @@ public class ExcelUtil {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public void rowSum(int startNum, int endNum, HSSFCell cell) {
-		char startChar = (char) ((startNum - 2) % 26 + 66);
-		char endChar = (char) ((endNum - 2) % 26 + 66);
-		int rowNum = cell.getRowIndex()+1;
-		String formula = "SUM(" + startChar + rowNum + ":" + endChar + rowNum
-				+ ")";
-		cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);
-		cell.setCellFormula(formula);
-	}
-
-	public void cellSum(int startCellNum, int endCellNum, HSSFCell cell) {
-		char cellChar = (char) ((cell.getColumnIndex() - 1) % 26 + 66);
-		String formula = "SUM(" + cellChar + startCellNum + ":" + cellChar
-				+ endCellNum + ")";
-		cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);
-		cell.setCellFormula(formula);
 	}
 
 }
