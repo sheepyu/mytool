@@ -3,6 +3,12 @@
 <mapper namespace="com.yy.statement.mapper.sytsMapper">
 
 	<select id="getSyts" resultType="Syts" parameterType="String">
+		select tdbh,sum(syts) as sumSyts from ls_mtsms_m where 
+		zt=1 and fsrq=#{fsrq}  and tdbh is not null 
+		group by tdbh order by tdbh
+	</select>
+	
+	<select id="getSyts2" resultType="Syts" parameterType="String">
 		select tdbh,sum(syts) as sumSyts from ls_mtsms where 
 		zt=1 and fsrq=#{fsrq}  and tdbh is not null 
 		group by tdbh order by tdbh
