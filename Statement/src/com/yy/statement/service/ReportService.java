@@ -14,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import com.yy.statement.bean.SaleBean;
 import com.yy.statement.domain.Sale;
 import com.yy.statement.domain.Syts;
 import com.yy.statement.util.DateUtil;
@@ -32,6 +33,7 @@ public class ReportService {
 	SqlSession session = null;
 	List<Syts> sytsList = new ArrayList<Syts>();
 	List<Sale> saleList = new ArrayList<Sale>();
+	List<SaleBean> saleBeanList = new ArrayList<SaleBean>();
 	String destName = null;
 
 	private static Map<String, Integer> sytsMap = new HashMap<String, Integer>();
@@ -46,28 +48,51 @@ public class ReportService {
 		this.createNewXls();
 		this.searchSyts(DateUtil.getYesterday("yyyyMMdd"));
 		this.searchSale(DateUtil.getYesterday("yyyyMMdd"));
+		this.saleTosaleBean();
+
 		try {
 			this.writeExcel();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			log.error(e.getStackTrace());
 			e.printStackTrace();
 		}
 	}
 
 	private void searchSale(String dayTime) {
-		//TODO 车上使用
+		// TODO 测试使用
 		dayTime = "20150618";
-		saleList = session.selectList(
-				"com.yy.statement.mapper.saleMapper.getSale", dayTime);
+		saleList = session.selectList("com.yy.statement.mapper.saleMapper.getSale", dayTime);
 		log.info(saleList);
-		
+
+	}
+
+	public void saleTosaleBean() {
+		for (int i = 0; i < saleList.size(); i++) {
+			int j = 0;
+			boolean flag = false;
+			for (; j < saleBeanList.size(); j++) {
+				if (saleList.get(i).getDlm().equals(saleBeanList.get(j).getDlm())) {
+					flag = true;
+					break;
+				}
+			}
+
+			if (flag) {
+				saleBeanList.get(j).getTdMap().put(saleList.get(i).getTdbh(), saleList.get(i).getTs());
+				saleBeanList.get(j).addSaleroomn(saleList.get(i).getSaleroomn());
+			} else {
+				SaleBean saleBean = new SaleBean(saleList.get(i).getDlm(), saleList.get(i).getDlmc(), saleList.get(i)
+						.getSaleroomn());
+				saleBean.getTdMap().put(saleList.get(i).getTdbh(), saleList.get(i).getTs());
+				saleBeanList.add(saleBean);
+			}
+		}
 	}
 
 	private void searchSyts(String dayTime) {
-		//TODO 测试使用，测试完毕撤下
+		// TODO 测试使用，测试完毕撤下
 		dayTime = "20150618";
-		sytsList = session.selectList(
-				"com.yy.statement.mapper.sytsMapper.getSyts", dayTime);
+		sytsList = session.selectList("com.yy.statement.mapper.sytsMapper.getSyts", dayTime);
 
 		for (int i = 0; i < sytsList.size(); i++) {
 			sytsMap.put(sytsList.get(i).getTdbh(), sytsList.get(i).getSumSyts());
@@ -92,6 +117,7 @@ public class ReportService {
 
 		this.statisticsSheet(workbook);
 		this.writeSyts(workbook);
+		this.writeSale(workbook);
 		FileOutputStream out = new FileOutputStream(destName);
 		workbook.write(out);
 		inputStream.close();
@@ -103,14 +129,13 @@ public class ReportService {
 
 	/**
 	 * 对运营商数据统计
+	 * 
 	 * @param workbook
 	 */
 	public void writeSyts(HSSFWorkbook workbook) {
 		// 获得sheet
-		System.out.println(DateUtil.getDayBefor(2, "M月dd日")
-				+ "系统数据统计");
-		HSSFSheet sheet = workbook.getSheet(DateUtil.getDayBefor(2, "M月dd日")
-				+ "系统数据统计");
+		System.out.println(DateUtil.getDayBefor(2, "M月dd日") + "系统数据统计");
+		HSSFSheet sheet = workbook.getSheet(DateUtil.getDayBefor(2, "M月dd日") + "系统数据统计");
 		HSSFRow row = sheet.getRow(3);
 		HSSFCell cell = row.getCell(1);
 		cell.setCellValue(sytsMap.get("1006"));
@@ -127,12 +152,12 @@ public class ReportService {
 
 	/**
 	 * 对系统发送数据统计
+	 * 
 	 * @param workbook
 	 */
 	public void statisticsSheet(HSSFWorkbook workbook) {
 		// 获得sheet
-		HSSFSheet sheet = workbook.getSheet("增值业务部发送量统计报表"
-				+ DateUtil.getTime("MM") + "月");
+		HSSFSheet sheet = workbook.getSheet("增值业务部发送量统计报表" + DateUtil.getTime("MM") + "月");
 
 		HSSFRow srcRow = sheet.getRow(2);
 		HSSFRow destRow = PoiUtil.insertRow(sheet, sheet.getLastRowNum());// 插入一行
@@ -160,9 +185,51 @@ public class ReportService {
 		for (int i = 1; i <= 6; i++) {
 			excelUtil.cellSum(3, rowNum, sumRow.getCell(i));
 		}
-
+		
 		sheet.setForceFormulaRecalculation(true);// 刷新公式
 		log.info("数据统计完成");
+	}
+
+	/**
+	 * 销售情况
+	 */
+	private void writeSale(HSSFWorkbook workbook) {
+		// 获得sheet
+		HSSFSheet sheet = workbook.getSheet(DateUtil.getDayBefor(2, "M月dd日") + "系统数据统计");
+		
+		int saleNumBefor = sheet.getLastRowNum() - 17;// 目前有多少条销售数据
+		int saleNumNow = saleBeanList.size();
+		if (saleNumBefor < saleNumNow) {
+			PoiUtil.insertRows(sheet, 16, saleNumNow - saleNumBefor);
+		}
+		//复制格式
+		for(int i=1;i<=saleNumNow-saleNumBefor;i++){
+			PoiUtil.copyRowStyle(sheet.getRow(15), sheet.getRow(15+i));// 格式
+		}
+		//写入数据
+		for(int i=0;i<saleBeanList.size();i++){
+			SaleBean saleBean = saleBeanList.get(i);
+			HSSFRow row = sheet.getRow(15+i);
+			HSSFCell cell = row.getCell(0);
+			cell.setCellValue(saleBean.getDlm());
+			cell = row.getCell(1);
+			cell.setCellValue(saleBean.getDlmc());
+			
+			
+			int[] tdts = {1006,1009,1010,2004,3002};
+			for(int j=0;j<tdts.length;j++){
+				cell =row.getCell(j+2);
+				if(saleBean.getTdMap().get(tdts[j])!=null){
+					cell.setCellValue(saleBean.getTdMap().get(tdts[j]));
+				}else{
+					cell.setCellValue("");
+				}
+			}
+			cell = row.getCell(7);
+			excelUtil.rowSum(3, 7, cell);
+			cell = row.getCell(8);
+			cell.setCellValue(saleBean.getSaleroomn());
+		}
 	}
 
 	private void initSytsMap() {
