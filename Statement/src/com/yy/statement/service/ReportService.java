@@ -54,8 +54,6 @@ public class ReportService {
 	}
 
 	private void searchSale(String dayTime) {
-		// TODO 测试使用
-		//dayTime = "20150618";
 		saleList = session.selectList("com.yy.statement.mapper.saleMapper.getSale", dayTime);
 		log.info(saleList);
 	}
@@ -84,8 +82,6 @@ public class ReportService {
 	}
 
 	private void searchSyts(String dayTime) {
-		// TODO 测试使用，测试完毕撤下
-		//dayTime = "20150618";
 		sytsList = session.selectList("com.yy.statement.mapper.sytsMapper.getSyts", dayTime);
 		for (int i = 0; i < sytsList.size(); i++) {
 			sytsMap.put(sytsList.get(i).getTdbh(), sytsList.get(i).getSumSyts());

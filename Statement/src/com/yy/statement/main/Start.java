@@ -59,7 +59,8 @@ public class Start {
 				session.close();
 				log.info("查询完毕，等待下次查询");
 			}
-		}, 0, ONE_DAY);
+			//TODO 这里是调试的
+		}, 0, 8 * 60 * 60 * 1000);
 	}
 
 	public void getSession() {
