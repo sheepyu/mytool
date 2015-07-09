@@ -40,7 +40,16 @@ public class PoiUtil {
 	 * @return
 	 */
 	public static void delteRows(HSSFSheet sheet, int startRow, int n) {
+		System.out.println("beforsheet.getLastRowNum()"+sheet.getLastRowNum());
 		sheet.shiftRows(startRow + n, sheet.getLastRowNum(), -n, true, false);
+		System.out.println("aftersheet.getLastRowNum()"+sheet.getLastRowNum());
+		//begin 2015年7月10日00:09:23 bug修复：往上移动行会在原地留下空行，删除留下的空行
+		for(int i=0;i<n;i++){
+			System.out.println(sheet.getLastRowNum());
+			HSSFRow row = sheet.getRow(sheet.getLastRowNum());
+			sheet.removeRow(row);
+		}
+		System.out.println("aftersheet.getLastRowNum()"+sheet.getLastRowNum());
 	}
 
 	/**

@@ -46,6 +46,8 @@ public class ReportService {
 		 * 判断今天星期几
 		 */
 		Calendar today = Calendar.getInstance();
+		//TODO 测试
+		today.set(Calendar.DAY_OF_MONTH, 8);
 		// 周一到周五间
 		String srcDay = "";
 		String destDay = "";
@@ -56,7 +58,7 @@ public class ReportService {
 		case Calendar.MONDAY:
 			srcDay = DateUtil.getDayBefor(4, "MMdd", today);
 			destDay = DateUtil.getDayBefor(3, "MMdd", today) + "-" + DateUtil.getDayBefor(1, "MMdd", today);
-			days = new String[] { DateUtil.getDayBefor(3, "yyyyMMdd"), DateUtil.getDayBefor(2, "yyyyMMdd"), DateUtil.getDayBefor(1, "yyyyMMdd") };
+			days = new String[] { DateUtil.getDayBefor(3, "yyyyMMdd",today), DateUtil.getDayBefor(2, "yyyyMMdd",today), DateUtil.getDayBefor(1, "yyyyMMdd",today) };
 			break;
 		case Calendar.TUESDAY:
 			srcDay = DateUtil.getDayBefor(4, "MMdd", today) + "-" + DateUtil.getDayBefor(2, "MMdd", today);

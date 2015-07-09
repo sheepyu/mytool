@@ -175,11 +175,22 @@ public class ExcelService {
 	 * @param days
 	 */
 	public void sheetWork(HSSFWorkbook workbook, String[] days) {
-		// 只需要做一天的报表
-		if (days.length == 1) {
-			String sheetName = DateUtil.StringToString("M月dd日", days[0]) + "系统数据统计";
-			workbook.setSheetName(0, sheetName);
+		
+		int sheetNum = workbook.getNumberOfSheets();
+		
+		if(sheetNum-1<days.length){
+			for(int i=sheetNum-1;i<=days.length;i++){
+				HSSFSheet sheet = workbook.cloneSheet(0);//克隆sheet
+				workbook.setSheetOrder(sheet.getSheetName(), 0);//把克隆的sheet移动到最前面
+			}
 		}
+		//批量改名
+		for(int i=0;i<days.length;i++){
+			String sheetName = DateUtil.StringToString("M月dd日", days[i]) + "系统数据统计";
+			workbook.setSheetName(i, sheetName);
+		}
+		
+		
 	}
 
 }
