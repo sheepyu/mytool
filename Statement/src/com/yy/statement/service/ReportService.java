@@ -49,22 +49,26 @@ public class ReportService {
 		// 周一到周五间
 		String srcDay = "";
 		String destDay = "";
+		String[] days = null;// 需要查询的日期
 		int weeks = today.get(Calendar.DAY_OF_WEEK);
 		switch (weeks) {
 		// 周一需要做周5,6,7三天的报表
 		case Calendar.MONDAY:
 			srcDay = DateUtil.getDayBefor(4, "MMdd", today);
 			destDay = DateUtil.getDayBefor(3, "MMdd", today) + "-" + DateUtil.getDayBefor(1, "MMdd", today);
+			days = new String[] { DateUtil.getDayBefor(3, "yyyyMMdd"), DateUtil.getDayBefor(2, "yyyyMMdd"), DateUtil.getDayBefor(1, "yyyyMMdd") };
 			break;
 		case Calendar.TUESDAY:
 			srcDay = DateUtil.getDayBefor(4, "MMdd", today) + "-" + DateUtil.getDayBefor(2, "MMdd", today);
 			destDay = DateUtil.getDayBefor(1, "MMdd", today);
+			days = new String[] { DateUtil.getDayBefor(1, "yyyyMMdd") };
 			break;
 		case Calendar.WEDNESDAY:
 		case Calendar.THURSDAY:
 		case Calendar.FRIDAY:
 			srcDay = DateUtil.getDayBefor(2, "MMdd", today);
 			destDay = DateUtil.getDayBefor(1, "MMdd", today);
+			days = new String[] { DateUtil.getDayBefor(1, "yyyyMMdd", today) };
 			break;
 		// 周六和周日则不做报表
 		case Calendar.SATURDAY:
@@ -73,16 +77,12 @@ public class ReportService {
 		}
 
 		this.createNewXls(srcDay, destDay);
-		this.searchSyts(DateUtil.getYesterday("yyyyMMdd"));
-		this.searchSale(DateUtil.getYesterday("yyyyMMdd"));
-		this.saleTosaleBean();
-
 		try {
-			this.writeExcel();
-		} catch (Exception e) {
-			log.error(e.getStackTrace());
-			e.printStackTrace();
+			this.writeExcel(days);
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
+
 	}
 
 	private void searchSale(String dayTime) {
@@ -105,8 +105,7 @@ public class ReportService {
 				saleBeanList.get(j).getTdMap().put(saleList.get(i).getTdbh(), saleList.get(i).getTs());
 				saleBeanList.get(j).addSaleroomn(saleList.get(i).getSaleroomn());
 			} else {
-				SaleBean saleBean = new SaleBean(saleList.get(i).getDlm(), saleList.get(i).getDlmc(), saleList.get(i)
-						.getSaleroomn());
+				SaleBean saleBean = new SaleBean(saleList.get(i).getDlm(), saleList.get(i).getDlmc(), saleList.get(i).getSaleroomn());
 				saleBean.getTdMap().put(saleList.get(i).getTdbh(), saleList.get(i).getTs());
 				saleBeanList.add(saleBean);
 			}
@@ -121,19 +120,6 @@ public class ReportService {
 		log.info(sytsList);
 	}
 
-	@Deprecated
-	/**
-	 * 
-	 */
-	public void createNewXls() {
-		String yesterday = DateUtil.getYesterday("MMdd");
-		String befor = DateUtil.getDayBefor(2, "MMdd");
-		String srcName = "excel\\增值业务部统计报表" + befor + ".xls";
-		destName = "excel\\增值业务部统计报表" + yesterday + ".xls";
-		excelService.copyXlsFile(srcName, destName);
-		log.info(destName + "复制完成");
-	}
-
 	/**
 	 * 
 	 * @param srcDays
@@ -146,13 +132,20 @@ public class ReportService {
 		log.info(destName + "复制完成");
 	}
 
-	public void writeExcel() throws Exception {
+	public void writeExcel(String[] days) throws Exception {
 		FileInputStream inputStream = new FileInputStream(destName);
 		HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
-
-		excelService.statisticsSheet(workbook, sytsMap);
-		excelService.writeSyts(workbook, sytsMap);
-		excelService.writeSale(workbook, saleBeanList);
+		
+		excelService.sheetWork(workbook, days);
+		
+		for (int i = 0; i < days.length; i++) {
+			this.searchSyts(days[i]);
+			excelService.statisticsSheet(workbook, sytsMap, days[i]);
+			excelService.writeSyts(workbook, sytsMap,days[i]);
+			this.searchSale(days[i]);
+			this.saleTosaleBean();
+			excelService.writeSale(workbook, saleBeanList,days[i]);
+		}
 
 		FileOutputStream out = new FileOutputStream(destName);
 		workbook.write(out);

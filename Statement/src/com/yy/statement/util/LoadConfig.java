@@ -11,8 +11,7 @@ import java.io.InputStream;
 import org.apache.log4j.Logger;
 
 public class LoadConfig {
-	private final String[] confFiles = new String[] { "conf.xml",
-			"monitor.xml", };
+	private final String[] confFiles = new String[] { "conf.xml", "statement.xml", };
 	private static Logger log = Logger.getLogger(LoadConfig.class);
 
 	public void init() {
@@ -43,8 +42,7 @@ public class LoadConfig {
 
 		try {
 			destFile.createNewFile();
-			InputStream is = this.getClass().getResourceAsStream(
-					"/" + srcFileName);
+			InputStream is = this.getClass().getResourceAsStream("/" + srcFileName);
 			BufferedInputStream bis = new BufferedInputStream(is);
 
 			out = new FileOutputStream(destFile);

@@ -18,7 +18,6 @@ import com.yy.statement.bean.SaleBean;
 import com.yy.statement.util.DateUtil;
 import com.yy.statement.util.PoiUtil;
 
-
 /**
  * 专门用来对付excel操作的业务
  * 
@@ -28,9 +27,6 @@ import com.yy.statement.util.PoiUtil;
 public class ExcelService {
 	private static Logger log = Logger.getLogger(ExcelService.class);
 
-	
-	
-	
 	/**
 	 * 复制ExcelUtil
 	 */
@@ -66,15 +62,15 @@ public class ExcelService {
 			}
 		}
 	}
-	
+
 	/**
 	 * 对运营商数据统计
 	 * 
 	 * @param workbook
 	 */
-	public void writeSyts(HSSFWorkbook workbook,Map<String, Integer> sytsMap) {
+	public void writeSyts(HSSFWorkbook workbook, Map<String, Integer> sytsMap, String sdate) {
 		// 获得sheet
-		HSSFSheet sheet = workbook.getSheet(DateUtil.getDayBefor(2, "M月dd日") + "系统数据统计");
+		HSSFSheet sheet = workbook.getSheet(DateUtil.StringToString("M月dd日", sdate) + "系统数据统计");
 		HSSFRow row = sheet.getRow(3);
 		HSSFCell cell = row.getCell(1);
 		cell.setCellValue(sytsMap.get("1006"));
@@ -89,15 +85,16 @@ public class ExcelService {
 		sheet.setForceFormulaRecalculation(true);// 刷新公式
 		log.info("数据统计完成");
 	}
-	
+
 	/**
 	 * 对系统发送数据统计
 	 * 
 	 * @param workbook
 	 */
-	public void statisticsSheet(HSSFWorkbook workbook,Map<String, Integer> sytsMap) {
+	public void statisticsSheet(HSSFWorkbook workbook, Map<String, Integer> sytsMap, String sdate) {
+		String month = sdate.substring(4, 6);
 		// 获得sheet
-		HSSFSheet sheet = workbook.getSheet("增值业务部发送量统计报表" + DateUtil.getTime("MM") + "月");
+		HSSFSheet sheet = workbook.getSheet("增值业务部发送量统计报表" + month + "月");
 
 		HSSFRow srcRow = sheet.getRow(2);
 		HSSFRow destRow = PoiUtil.insertRow(sheet, sheet.getLastRowNum());// 插入一行
@@ -106,7 +103,7 @@ public class ExcelService {
 		 * 对sheet2写入数据
 		 */
 		HSSFCell cell = destRow.getCell(0);
-		cell.setCellValue(DateUtil.getYesterday("M月dd日"));
+		cell.setCellValue(DateUtil.StringToString("M月dd日", sdate));
 		cell = destRow.getCell(1);
 		cell.setCellValue(sytsMap.get("1006"));
 		cell = destRow.getCell(2);
@@ -128,14 +125,13 @@ public class ExcelService {
 		sheet.setForceFormulaRecalculation(true);// 刷新公式
 		log.info("系统发送统计完成");
 	}
-	
-	
+
 	/**
 	 * 销售情况
 	 */
-	public void writeSale(HSSFWorkbook workbook,List<SaleBean> saleBeanList) {
+	public void writeSale(HSSFWorkbook workbook, List<SaleBean> saleBeanList,String sdate) {
 		// 获得sheet
-		HSSFSheet sheet = workbook.getSheet(DateUtil.getDayBefor(2, "M月dd日") + "系统数据统计");
+		HSSFSheet sheet = workbook.getSheet(DateUtil.StringToString("M月dd日",sdate) + "系统数据统计");
 		int saleNumBefor = sheet.getLastRowNum() - 17;// 目前有多少条销售数据
 		int saleNumNow = saleBeanList.size();
 		if (saleNumBefor < saleNumNow) {
@@ -170,8 +166,20 @@ public class ExcelService {
 			cell = row.getCell(8);
 			cell.setCellValue(saleBean.getSaleroomn());
 		}
-		int sheetIndex = workbook.getSheetIndex(sheet);
-		workbook.setSheetName(sheetIndex, DateUtil.getDayBefor(1, "M月dd日") + "系统数据统计");
+
+	}
+
+	/**
+	 * 对sheet进行增删和改名
+	 * @param workbook
+	 * @param days
+	 */
+	public void sheetWork(HSSFWorkbook workbook, String[] days) {
+		// 只需要做一天的报表
+		if (days.length == 1) {
+			String sheetName = DateUtil.StringToString("M月dd日", days[0]) + "系统数据统计";
+			workbook.setSheetName(0, sheetName);
+		}
 	}
 
 }

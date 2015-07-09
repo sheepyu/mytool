@@ -1,22 +1,11 @@
 package com.yy.statement.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtil {
-
-	@Deprecated
-	/**
-	 * 
-	 * @return
-	 */
-	public static String getDateFormat() {
-		Date currentTime = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String dateString = formatter.format(currentTime);
-		return dateString;
-	}
 
 	public static String getTime() {
 		return getTime("yyyy-MM-dd HH-mm-ss");
@@ -27,6 +16,19 @@ public class DateUtil {
 		SimpleDateFormat formatter = new SimpleDateFormat(format);
 		String timeString = formatter.format(cal.getTime());
 		return timeString;
+	}
+	
+	public static String StringToString(String format,String sdate){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String result=null;
+		try {
+			Date date = sdf.parse(sdate);
+			sdf = new SimpleDateFormat(format);
+			result = sdf.format(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	public static boolean isRestTime() {

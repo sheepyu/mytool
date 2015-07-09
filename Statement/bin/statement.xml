@@ -2,7 +2,7 @@
 <monitor>
 
 	<config>
-		<!--秒为单位  -->
+		<!--秒为单位 -->
 		<sleep>300</sleep>
 	</config>
 
@@ -11,4 +11,5 @@
 		<password>sequence23</password>
 		<addressee>sheep_yu@163.com</addressee>
 	</mail>
+	<td>1006,1009,1010,1011,2004,3002</td>
 </monitor>
