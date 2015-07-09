@@ -3,6 +3,7 @@ package com.yy.statement.service;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,38 @@ public class ReportService {
 	}
 
 	public void begin() {
-		this.createNewXls();
+
+		/**
+		 * 判断今天星期几
+		 */
+		Calendar today = Calendar.getInstance();
+		// 周一到周五间
+		String srcDay = "";
+		String destDay = "";
+		int weeks = today.get(Calendar.DAY_OF_WEEK);
+		switch (weeks) {
+		// 周一需要做周5,6,7三天的报表
+		case Calendar.MONDAY:
+			srcDay = DateUtil.getDayBefor(4, "MMdd", today);
+			destDay = DateUtil.getDayBefor(3, "MMdd", today) + "-" + DateUtil.getDayBefor(1, "MMdd", today);
+			break;
+		case Calendar.TUESDAY:
+			srcDay = DateUtil.getDayBefor(4, "MMdd", today) + "-" + DateUtil.getDayBefor(2, "MMdd", today);
+			destDay = DateUtil.getDayBefor(1, "MMdd", today);
+			break;
+		case Calendar.WEDNESDAY:
+		case Calendar.THURSDAY:
+		case Calendar.FRIDAY:
+			srcDay = DateUtil.getDayBefor(2, "MMdd", today);
+			destDay = DateUtil.getDayBefor(1, "MMdd", today);
+			break;
+		// 周六和周日则不做报表
+		case Calendar.SATURDAY:
+		case Calendar.SUNDAY:
+			return;
+		}
+
+		this.createNewXls(srcDay, destDay);
 		this.searchSyts(DateUtil.getYesterday("yyyyMMdd"));
 		this.searchSale(DateUtil.getYesterday("yyyyMMdd"));
 		this.saleTosaleBean();
@@ -89,6 +121,10 @@ public class ReportService {
 		log.info(sytsList);
 	}
 
+	@Deprecated
+	/**
+	 * 
+	 */
 	public void createNewXls() {
 		String yesterday = DateUtil.getYesterday("MMdd");
 		String befor = DateUtil.getDayBefor(2, "MMdd");
@@ -98,13 +134,25 @@ public class ReportService {
 		log.info(destName + "复制完成");
 	}
 
+	/**
+	 * 
+	 * @param srcDays
+	 * @param destDays
+	 */
+	public void createNewXls(String srcDays, String destDays) {
+		String srcName = "excel\\增值业务部统计报表" + srcDays + ".xls";
+		destName = "excel\\增值业务部统计报表" + destDays + ".xls";
+		excelService.copyXlsFile(srcName, destName);
+		log.info(destName + "复制完成");
+	}
+
 	public void writeExcel() throws Exception {
 		FileInputStream inputStream = new FileInputStream(destName);
 		HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
 
-		excelService.statisticsSheet(workbook,sytsMap);
-		excelService.writeSyts(workbook,sytsMap);
-		excelService.writeSale(workbook,saleBeanList);
+		excelService.statisticsSheet(workbook, sytsMap);
+		excelService.writeSyts(workbook, sytsMap);
+		excelService.writeSale(workbook, saleBeanList);
 
 		FileOutputStream out = new FileOutputStream(destName);
 		workbook.write(out);
@@ -114,7 +162,6 @@ public class ReportService {
 		}
 		log.info("增值业务部发送量统计报表 已完成");
 	}
-
 
 	private void initSytsMap() {
 		sytsMap.put("1006", 0);// 广东移动

@@ -46,7 +46,6 @@ public class ExcelService {
 			while ((byteread = in.read(buffer)) != -1) {
 				out.write(buffer, 0, byteread);
 			}
-			log.info(srcName + "复制完成");
 		} catch (FileNotFoundException e) {
 			log.info(e.getStackTrace());
 			e.printStackTrace();
@@ -75,7 +74,6 @@ public class ExcelService {
 	 */
 	public void writeSyts(HSSFWorkbook workbook,Map<String, Integer> sytsMap) {
 		// 获得sheet
-		System.out.println(DateUtil.getDayBefor(2, "M月dd日") + "系统数据统计");
 		HSSFSheet sheet = workbook.getSheet(DateUtil.getDayBefor(2, "M月dd日") + "系统数据统计");
 		HSSFRow row = sheet.getRow(3);
 		HSSFCell cell = row.getCell(1);
@@ -138,7 +136,6 @@ public class ExcelService {
 	public void writeSale(HSSFWorkbook workbook,List<SaleBean> saleBeanList) {
 		// 获得sheet
 		HSSFSheet sheet = workbook.getSheet(DateUtil.getDayBefor(2, "M月dd日") + "系统数据统计");
-
 		int saleNumBefor = sheet.getLastRowNum() - 17;// 目前有多少条销售数据
 		int saleNumNow = saleBeanList.size();
 		if (saleNumBefor < saleNumNow) {

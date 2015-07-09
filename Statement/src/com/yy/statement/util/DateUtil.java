@@ -7,6 +7,10 @@ import java.util.Date;
 public class DateUtil {
 
 	@Deprecated
+	/**
+	 * 
+	 * @return
+	 */
 	public static String getDateFormat() {
 		Date currentTime = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -46,6 +50,15 @@ public class DateUtil {
 	
 	public static String getDayBefor(int day,String format){
 		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -day);
+		String befor = new SimpleDateFormat(format).format(cal.getTime());
+		return befor;
+	}
+	
+	public static String getDayBefor(int day,String format,Calendar srcDay){
+		Date date = srcDay.getTime();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
 		cal.add(Calendar.DATE, -day);
 		String befor = new SimpleDateFormat(format).format(cal.getTime());
 		return befor;
