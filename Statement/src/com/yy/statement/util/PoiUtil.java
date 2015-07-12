@@ -1,10 +1,14 @@
 package com.yy.statement.util;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
 public class PoiUtil {
+
+	private static Logger log = Logger.getLogger(PoiUtil.class);
+
 	/**
 	 * 插入一行
 	 * 
@@ -39,17 +43,17 @@ public class PoiUtil {
 	 * @param rowNum
 	 * @return
 	 */
-	public static void delteRows(HSSFSheet sheet, int startRow, int n) {
-		System.out.println("beforsheet.getLastRowNum()"+sheet.getLastRowNum());
+	public static void deleteRows(HSSFSheet sheet, int startRow, int n) {
+		log.debug("befor shiftRows sheet.getLastRowNum():" + sheet.getLastRowNum());
 		sheet.shiftRows(startRow + n, sheet.getLastRowNum(), -n, true, false);
-		System.out.println("aftersheet.getLastRowNum()"+sheet.getLastRowNum());
-		//begin 2015年7月10日00:09:23 bug修复：往上移动行会在原地留下空行，删除留下的空行
-		for(int i=0;i<n;i++){
-			System.out.println(sheet.getLastRowNum());
+		log.debug("after shiftRows sheet.getLastRowNum():" + sheet.getLastRowNum());
+		// begin 2015年7月10日00:09:23 bug修复：往上移动行会在原地留下空行，删除留下的空行
+		for (int i = 0; i < n - 1; i++) {
 			HSSFRow row = sheet.getRow(sheet.getLastRowNum());
 			sheet.removeRow(row);
 		}
-		System.out.println("aftersheet.getLastRowNum()"+sheet.getLastRowNum());
+		log.debug("deleteRows finish sheet.getLastRowNum():" + sheet.getLastRowNum() + "  and n:" + n);
+		// end 2015年7月13日00:10:00 bug修复：往上移动行会在原地留下空行，删除留下的空行
 	}
 
 	/**

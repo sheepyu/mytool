@@ -137,7 +137,7 @@ public class ExcelService {
 		if (saleNumBefor < saleNumNow) {
 			PoiUtil.insertRows(sheet, 16, saleNumNow - saleNumBefor);
 		} else {
-			PoiUtil.delteRows(sheet, 16, saleNumBefor - saleNumNow);
+			PoiUtil.deleteRows(sheet, 16, saleNumBefor - saleNumNow);
 		}
 		// 复制格式
 		for (int i = 1; i <= saleNumNow - saleNumBefor; i++) {
