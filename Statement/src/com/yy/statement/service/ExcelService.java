@@ -199,7 +199,7 @@ public class ExcelService {
 		int sheetNum = workbook.getNumberOfSheets();
 
 		if (sheetNum - 1 < days.length) {
-			for (int i = sheetNum - 1; i <= days.length; i++) {
+			for (int i = sheetNum; i <= days.length; i++) {
 				HSSFSheet sheet = workbook.cloneSheet(0);// 克隆sheet
 				workbook.setSheetOrder(sheet.getSheetName(), 0);// 把克隆的sheet移动到最前面
 			}
