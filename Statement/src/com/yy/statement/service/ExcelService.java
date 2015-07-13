@@ -133,10 +133,25 @@ public class ExcelService {
 	/**
 	 * 销售情况
 	 */
-	public void writeSale(HSSFWorkbook workbook, List<SaleBean> saleBeanList,String sdate) {
+	public void writeSale(HSSFWorkbook workbook, List<SaleBean> saleBeanList, String sdate) {
 		// 获得sheet
-		HSSFSheet sheet = workbook.getSheet(DateUtil.StringToString("M月dd日",sdate) + "系统数据统计");
-		int saleNumBefor = sheet.getLastRowNum() - 17;// 目前有多少条销售数据
+		HSSFSheet sheet = workbook.getSheet(DateUtil.StringToString("M月dd日", sdate) + "系统数据统计");
+		// begin 2015年7月13日23:24:38
+		// 修复BUG，原：通过最大行来确定有多少销售数据，现：通过定位总计行来确定有多少销售数据，原来的最大行在最后总会留下多余行导致定位不准确
+		int saleNumBefor = 0;// 目前有多少条销售数据
+		for (int i = 15; i <= sheet.getLastRowNum(); i++) {
+			HSSFRow row = sheet.getRow(i);
+			HSSFCell cell = row.getCell(0);
+			if(cell.getCellType()==HSSFCell.CELL_TYPE_STRING){
+				// 定位到总计那行
+				if (cell.getStringCellValue().equals("总计")) {
+					saleNumBefor = row.getRowNum() - 15;// 目前有多少条销售数据
+					break;
+				}
+			}
+		}
+		// end 2015年7月13日23:29:27 
+		// 修复BUG，原：通过最大行来确定有多少销售数据，现：通过定位总计行来确定有多少销售数据，原来的最大行在最后总会留下多余行导致定位不准确
 		int saleNumNow = saleBeanList.size();
 		if (saleNumBefor < saleNumNow) {
 			PoiUtil.insertRows(sheet, 16, saleNumNow - saleNumBefor);
@@ -175,26 +190,26 @@ public class ExcelService {
 
 	/**
 	 * 对sheet进行增删和改名
+	 * 
 	 * @param workbook
 	 * @param days
 	 */
 	public void sheetWork(HSSFWorkbook workbook, String[] days) {
-		
+
 		int sheetNum = workbook.getNumberOfSheets();
-		
-		if(sheetNum-1<days.length){
-			for(int i=sheetNum-1;i<=days.length;i++){
-				HSSFSheet sheet = workbook.cloneSheet(0);//克隆sheet
-				workbook.setSheetOrder(sheet.getSheetName(), 0);//把克隆的sheet移动到最前面
+
+		if (sheetNum - 1 < days.length) {
+			for (int i = sheetNum - 1; i <= days.length; i++) {
+				HSSFSheet sheet = workbook.cloneSheet(0);// 克隆sheet
+				workbook.setSheetOrder(sheet.getSheetName(), 0);// 把克隆的sheet移动到最前面
 			}
 		}
-		//批量改名
-		for(int i=0;i<days.length;i++){
+		// 批量改名
+		for (int i = 0; i < days.length; i++) {
 			String sheetName = DateUtil.StringToString("M月dd日", days[i]) + "系统数据统计";
 			workbook.setSheetName(i, sheetName);
 		}
-		
-		
+
 	}
 
 }

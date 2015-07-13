@@ -48,6 +48,7 @@ public class PoiUtil {
 		sheet.shiftRows(startRow + n, sheet.getLastRowNum(), -n, true, false);
 		log.debug("after shiftRows sheet.getLastRowNum():" + sheet.getLastRowNum());
 		// begin 2015年7月10日00:09:23 bug修复：往上移动行会在原地留下空行，删除留下的空行
+		// PS: 2015年7月13日23:42:33  bug依然存在，不过此代码作用变为清理多余的有值行，空值行依然无法完全去除
 		for (int i = 0; i < n - 1; i++) {
 			HSSFRow row = sheet.getRow(sheet.getLastRowNum());
 			sheet.removeRow(row);
@@ -81,7 +82,6 @@ public class PoiUtil {
 	 * @param destCell
 	 */
 	public static void copyCellStyle(HSSFCell srcCell, HSSFCell destCell) {
-		// 获得格式
 		destCell.setCellStyle(srcCell.getCellStyle());
 	}
 
