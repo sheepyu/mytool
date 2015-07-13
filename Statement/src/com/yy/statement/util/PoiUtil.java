@@ -93,8 +93,8 @@ public class PoiUtil {
 	 * @param cell
 	 */
 	public static void rowSum(int startNum, int endNum, HSSFCell cell) {
-		char startChar = (char) ((startNum - 2) % 26 + 66);
-		char endChar = (char) ((endNum - 2) % 26 + 66);
+		char startChar = (char) (startNum % 26 + 65);
+		char endChar = (char) (endNum % 26 + 65);
 		int rowNum = cell.getRowIndex() + 1;
 		String formula = "SUM(" + startChar + rowNum + ":" + endChar + rowNum + ")";
 		cell.setCellType(HSSFCell.CELL_TYPE_FORMULA);

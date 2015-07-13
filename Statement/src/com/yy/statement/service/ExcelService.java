@@ -79,8 +79,10 @@ public class ExcelService {
 		cell = row.getCell(3);
 		cell.setCellValue(sytsMap.get("1010"));
 		cell = row.getCell(4);
-		cell.setCellValue(sytsMap.get("2004"));
+		cell.setCellValue(sytsMap.get("1011"));
 		cell = row.getCell(5);
+		cell.setCellValue(sytsMap.get("2004"));
+		cell = row.getCell(6);
 		cell.setCellValue(sytsMap.get("3002"));
 		sheet.setForceFormulaRecalculation(true);// 刷新公式
 		log.info("数据统计完成");
@@ -111,15 +113,17 @@ public class ExcelService {
 		cell = destRow.getCell(3);
 		cell.setCellValue(sytsMap.get("1010"));
 		cell = destRow.getCell(4);
-		cell.setCellValue(sytsMap.get("2004"));
+		cell.setCellValue(sytsMap.get("1011"));
 		cell = destRow.getCell(5);
+		cell.setCellValue(sytsMap.get("2004"));
+		cell = destRow.getCell(6);
 		cell.setCellValue(sytsMap.get("3002"));
-		cell = destRow.getCell(6);// 总量cell
-		PoiUtil.rowSum(2, 6, cell);
+		cell = destRow.getCell(7);// 总量cell
+		PoiUtil.rowSum(1, 6, cell);
 		// 总计公式
 		HSSFRow sumRow = sheet.getRow(sheet.getLastRowNum());
 		int rowNum = destRow.getRowNum() + 1;
-		for (int i = 1; i <= 6; i++) {
+		for (int i = 1; i <= 7; i++) {
 			PoiUtil.cellSum(3, rowNum, sumRow.getCell(i));
 		}
 		sheet.setForceFormulaRecalculation(true);// 刷新公式
@@ -152,7 +156,7 @@ public class ExcelService {
 			cell = row.getCell(1);
 			cell.setCellValue(saleBean.getDlmc());
 
-			int[] tdts = { 1006, 1009, 1010, 2004, 3002 };
+			int[] tdts = { 1006, 1009, 1010, 1011, 2004, 3002 };
 			for (int j = 0; j < tdts.length; j++) {
 				cell = row.getCell(j + 2);
 				if (saleBean.getTdMap().get(tdts[j]) != null) {
@@ -161,9 +165,9 @@ public class ExcelService {
 					cell.setCellValue("");
 				}
 			}
-			cell = row.getCell(7);
-			PoiUtil.rowSum(3, 7, cell);
 			cell = row.getCell(8);
+			PoiUtil.rowSum(2, 7, cell);
+			cell = row.getCell(9);
 			cell.setCellValue(saleBean.getSaleroomn());
 		}
 

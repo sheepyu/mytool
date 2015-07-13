@@ -46,8 +46,8 @@ public class ReportService {
 		 * 判断今天星期几
 		 */
 		Calendar today = Calendar.getInstance();
-		//TODO 测试
-		today.set(Calendar.DAY_OF_MONTH, 8);
+		// TODO 测试
+		today.set(Calendar.DAY_OF_MONTH, 10);
 		// 周一到周五间
 		String srcDay = "";
 		String destDay = "";
@@ -58,7 +58,8 @@ public class ReportService {
 		case Calendar.MONDAY:
 			srcDay = DateUtil.getDayBefor(4, "MMdd", today);
 			destDay = DateUtil.getDayBefor(3, "MMdd", today) + "-" + DateUtil.getDayBefor(1, "MMdd", today);
-			days = new String[] { DateUtil.getDayBefor(3, "yyyyMMdd",today), DateUtil.getDayBefor(2, "yyyyMMdd",today), DateUtil.getDayBefor(1, "yyyyMMdd",today) };
+			days = new String[] { DateUtil.getDayBefor(3, "yyyyMMdd", today), DateUtil.getDayBefor(2, "yyyyMMdd", today),
+					DateUtil.getDayBefor(1, "yyyyMMdd", today) };
 			break;
 		case Calendar.TUESDAY:
 			srcDay = DateUtil.getDayBefor(4, "MMdd", today) + "-" + DateUtil.getDayBefor(2, "MMdd", today);
@@ -137,16 +138,16 @@ public class ReportService {
 	public void writeExcel(String[] days) throws Exception {
 		FileInputStream inputStream = new FileInputStream(destName);
 		HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
-		
+
 		excelService.sheetWork(workbook, days);
-		
+
 		for (int i = 0; i < days.length; i++) {
 			this.searchSyts(days[i]);
 			excelService.statisticsSheet(workbook, sytsMap, days[i]);
-			excelService.writeSyts(workbook, sytsMap,days[i]);
+			excelService.writeSyts(workbook, sytsMap, days[i]);
 			this.searchSale(days[i]);
 			this.saleTosaleBean();
-			excelService.writeSale(workbook, saleBeanList,days[i]);
+			excelService.writeSale(workbook, saleBeanList, days[i]);
 		}
 
 		FileOutputStream out = new FileOutputStream(destName);
@@ -162,6 +163,7 @@ public class ReportService {
 		sytsMap.put("1006", 0);// 广东移动
 		sytsMap.put("1009", 0);// 安徽移动
 		sytsMap.put("1010", 0);// 北京移动
+		sytsMap.put("1011", 0);// 杭州移动
 		sytsMap.put("2004", 0);// 联通10690
 		sytsMap.put("3002", 0);// 电信10690
 	}
