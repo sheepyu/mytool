@@ -46,8 +46,6 @@ public class ReportService {
 		 * 判断今天星期几
 		 */
 		Calendar today = Calendar.getInstance();
-		// TODO 测试
-		//today.set(Calendar.DAY_OF_MONTH, 12);
 		// 周一到周五间
 		String srcDay = "";
 		String destDay = "";

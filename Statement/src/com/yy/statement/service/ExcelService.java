@@ -142,7 +142,7 @@ public class ExcelService {
 		for (int i = 15; i <= sheet.getLastRowNum(); i++) {
 			HSSFRow row = sheet.getRow(i);
 			HSSFCell cell = row.getCell(0);
-			if(cell.getCellType()==HSSFCell.CELL_TYPE_STRING){
+			if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
 				// 定位到总计那行
 				if (cell.getStringCellValue().equals("总计")) {
 					saleNumBefor = row.getRowNum() - 15;// 目前有多少条销售数据
@@ -150,7 +150,7 @@ public class ExcelService {
 				}
 			}
 		}
-		// end 2015年7月13日23:29:27 
+		// end 2015年7月13日23:29:27
 		// 修复BUG，原：通过最大行来确定有多少销售数据，现：通过定位总计行来确定有多少销售数据，原来的最大行在最后总会留下多余行导致定位不准确
 		int saleNumNow = saleBeanList.size();
 		if (saleNumBefor < saleNumNow) {
@@ -202,6 +202,11 @@ public class ExcelService {
 			for (int i = sheetNum; i <= days.length; i++) {
 				HSSFSheet sheet = workbook.cloneSheet(0);// 克隆sheet
 				workbook.setSheetOrder(sheet.getSheetName(), 0);// 把克隆的sheet移动到最前面
+			}
+		}
+		if (sheetNum - 1 > days.length) {
+			for (int i = days.length; i < sheetNum - 1; i++) {
+				workbook.removeSheetAt(0);// 移除sheet
 			}
 		}
 		// 批量改名

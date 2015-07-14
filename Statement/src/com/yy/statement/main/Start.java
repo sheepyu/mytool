@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.Logger;
 
+import com.yy.statement.service.RemainService;
 import com.yy.statement.service.ReportService;
 import com.yy.statement.util.DateUtil;
 import com.yy.statement.util.LoadConfig;
@@ -42,10 +43,8 @@ public class Start {
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		Long timeMillis = cal.getTimeInMillis();// 定时时间的偏移量
-		Long nextTime = (curMillis - timeMillis) > 0 ? timeMillis - curMillis
-				+ ONE_DAY : timeMillis - curMillis;// 离下次定时的时间还有多少毫秒
-		log.info("现在时间是：" + DateUtil.getTime() + " 距离下次定时还有 :" + nextTime
-				+ "毫秒");
+		Long nextTime = (curMillis - timeMillis) > 0 ? timeMillis - curMillis + ONE_DAY : timeMillis - curMillis;// 离下次定时的时间还有多少毫秒
+		log.info("现在时间是：" + DateUtil.getTime() + " 距离下次定时还有 :" + nextTime + "毫秒");
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -53,14 +52,12 @@ public class Start {
 				log.info(DateUtil.getTime() + " 定时开启 ");
 				getSession();
 				session.clearCache();
-				// TODO 测试report 注释掉remain,测试完毕需加去除注释
-				//new RemainService(session).search();
+				new RemainService(session).search();
 				new ReportService(session).begin();
 				session.close();
 				log.info("查询完毕，等待下次查询");
 			}
-			//TODO 这里是调试的
-		}, 0, 8 * 60 * 60 * 1000);
+		}, nextTime, 24 * 60 * 60 * 1000);
 	}
 
 	public void getSession() {
